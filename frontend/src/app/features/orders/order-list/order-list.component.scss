@@ -1,0 +1,132 @@
+.orders-container {
+  padding: 40px 0;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #d32f2f;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .loading-spinner, .error-message, .orders-empty {
+    text-align: center;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+  }
+  
+  .error-message {
+    p {
+      color: #d32f2f;
+    }
+  }
+  
+  .browse-menu {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+    &:hover {
+      background-color: #b71c1c;
+    }
+  }
+  
+  .orders-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .order-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      
+      .order-info {
+        h3 {
+          margin: 0 0 5px;
+          font-size: 18px;
+          color: #333;
+        }
+        
+        .order-date {
+          margin: 0;
+          font-size: 14px;
+          color: #666;
+        }
+      }
+      
+      .order-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: capitalize;
+        
+        &.status-pending {
+          background-color: #ffeeba;
+          color: #856404;
+        }
+        
+        &.status-confirmed {
+          background-color: #b8daff;
+          color: #004085;
+        }
+        
+        &.status-delivered {
+          background-color: #c3e6cb;
+          color: #155724;
+        }
+        
+        &.status-cancelled {
+          background-color: #f5c6cb;
+          color: #721c24;
+        }
+      }
+    }
+    
+    .order-summary {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+      
+      @media (min-width: 576px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      p {
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+    
+    .order-action {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+} 

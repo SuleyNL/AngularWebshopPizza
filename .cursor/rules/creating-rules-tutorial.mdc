@@ -1,0 +1,81 @@
+---
+description: Step-by-step guide for creating Cursor rule
+globs: 
+alwaysApply: false
+---
+name: Creating Rules Tutorial
+version: "1.0"
+rule_definition:
+  description: "A comprehensive tutorial on how to create Cursor rules correctly"
+  instructions: |
+    # IMPORTANT RULE: HOW TO CREATE CURSOR RULES
+
+    This tutorial explains the exact step-by-step process for creating Cursor rules:
+
+    ## Step 1: Create an Empty File First
+    
+    **ALWAYS create an empty file first!** This is crucial for proper file registration.
+    
+    ```
+    1. Identify the .cursor/rules/ directory in the project
+    2. Create an empty file with your rule name using the .mdc extension:
+       .cursor/rules/your-rule-name.mdc
+    ```
+    
+    ## Step 2: Open the Empty File
+    
+    After creating the empty file, you should open it to see if the IDE has auto-generated 
+    the skeleton frontmatter:
+    
+    ```
+    ---
+    description: 
+    globs: 
+    alwaysApply: false
+    ---
+    ```
+    
+    ## Step 3: Fill in the Frontmatter
+    
+    Complete the frontmatter section with:
+    
+    ```
+    ---
+    description: Description of the task this rule is helpful for
+    globs: "**/*.js", "**/*.ts" # File patterns this rule applies to, leave empty if not applied
+    alwaysApply: true or false    # Whether rule should always apply
+    ---
+    ```
+    
+    ## Step 4: Add Your Rule Content
+    
+    Below the frontmatter, add your rule content in this structure:
+    
+    ```
+    name: Your Rule Name
+    version: "1.0"
+    rule_definition:
+      description: "Detailed description of your rule"
+      instructions: |
+        # RULE TITLE
+        
+        Your detailed rule instructions here...
+    ```
+    
+    ## Real Example
+    
+    Here's how I created the "Document All Code" rule:
+    
+    1. Created empty file: `.cursor/rules/document-all-code.mdc`
+    2. Opened the file to check for auto-generated content
+    3. Added the frontmatter:
+       ```
+       ---
+       description: Ensure all code is properly documented
+       globs: "**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx", "**/*.py", "**/*.cs", "**/*.java", "**/*.c", "**/*.cpp", "**/*.h", "**/*.hpp"
+       alwaysApply: true
+       ---
+       ```
+    4. Added the rule content with documentation guidelines
+    
+    Remember: Creating an empty file first is essential for proper rule registration in Cursor! 

@@ -1,0 +1,46 @@
+<div class="product-management-container">
+    <div class="header">
+        <h1>Product Management</h1>
+        <button class="create-btn" (click)="createProduct()">Add New Product</button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading products...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && products.length === 0" class="no-products">
+        No products found. Please add some products.
+    </div>
+
+    <table *ngIf="!loading && products.length > 0" class="products-table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Available</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products">
+                <td class="product-image">
+                    <img [src]="product.imageUrl || 'assets/images/no-image.png'" alt="{{ product.name }}">
+                </td>
+                <td>{{ product.name }}</td>
+                <td>€{{ product.price }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.isAvailable ? 'Yes' : 'No' }}</td>
+                <td class="actions">
+                    <button class="edit-btn" *ngIf="product.id !== undefined" (click)="editProduct(product.id)">Edit</button>
+                    <button class="delete-btn" *ngIf="product.id !== undefined" (click)="deleteProduct(product.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

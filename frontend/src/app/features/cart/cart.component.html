@@ -1,0 +1,65 @@
+<div class="cart-container">
+  <div class="container">
+    <h2>Your Cart</h2>
+    
+    <div *ngIf="cartItems.length === 0" class="cart-empty">
+      <p>Your cart is currently empty.</p>
+      <button class="continue-shopping" routerLink="/">Continue Shopping</button>
+    </div>
+    
+    <div *ngIf="cartItems.length > 0" class="cart-content">
+      <div class="cart-items">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <div class="item-image">
+            <img *ngIf="item.product.imageUrl" [src]="item.product.imageUrl" [alt]="item.product.name">
+            <span *ngIf="!item.product.imageUrl" class="placeholder-img">🍕</span>
+          </div>
+          <div class="item-details">
+            <h3>{{item.product.name}}</h3>
+            <p class="price">${{item.product.price.toFixed(2)}}</p>
+          </div>
+          <div class="item-quantity">
+            <button mat-icon-button color="primary" (click)="decreaseQuantity(item)">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span>{{item.quantity}}</span>
+            <button mat-icon-button color="primary" (click)="increaseQuantity(item)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="item-total">
+            <p>${{(item.quantity * item.product.price).toFixed(2)}}</p>
+          </div>
+          <button mat-icon-button color="warn" class="remove-item" (click)="removeItem(item)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="cart-actions">
+        <button mat-raised-button color="warn" (click)="clearCart()">
+          <mat-icon>delete</mat-icon> Clear Cart
+        </button>
+      </div>
+      
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>${{subtotal.toFixed(2)}}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax (7%):</span>
+          <span>${{tax.toFixed(2)}}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>${{total.toFixed(2)}}</span>
+        </div>
+        
+        <button mat-raised-button color="primary" class="checkout-button" routerLink="/checkout">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+</div> 

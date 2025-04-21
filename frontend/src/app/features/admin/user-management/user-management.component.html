@@ -1,0 +1,47 @@
+<div class="user-management-container">
+    <div class="header">
+        <h1>User Management</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading users...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && users.length === 0" class="no-users">
+        No users found.
+    </div>
+
+    <table *ngIf="!loading && users.length > 0" class="users-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users">
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                <td>
+                    <span class="role-badge" [ngClass]="'role-' + user.role.toLowerCase()">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td class="actions">
+                    <button class="edit-btn" *ngIf="user.id !== undefined" (click)="editUser(user.id)">Edit</button>
+                    <button class="delete-btn" *ngIf="user.id !== undefined" (click)="deleteUser(user.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

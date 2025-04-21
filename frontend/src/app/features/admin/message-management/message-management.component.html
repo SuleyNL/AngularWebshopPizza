@@ -1,0 +1,47 @@
+<div class="message-management-container">
+    <div class="header">
+        <h1>Message Management</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading messages...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && messages.length === 0" class="no-messages">
+        No messages found.
+    </div>
+
+    <table *ngIf="!loading && messages.length > 0" class="messages-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>From</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let message of messages" [ngClass]="{'unread': !message.isRead}">
+                <td>{{ message.id }}</td>
+                <td>{{ message.createdAt | date: 'medium' }}</td>
+                <td>{{ message.name }} <br> <small>{{ message.email }}</small></td>
+                <td class="subject">{{ message.subject }}</td>
+                <td>
+                    <span class="status-badge" [ngClass]="message.isRead ? 'status-read' : 'status-unread'">
+                        {{ message.isRead ? 'Read' : 'Unread' }}
+                    </span>
+                </td>
+                <td class="actions">
+                    <button class="view-btn" *ngIf="message.id !== undefined" (click)="viewMessage(message.id)">View</button>
+                    <button class="delete-btn" *ngIf="message.id !== undefined" (click)="deleteMessage(message.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

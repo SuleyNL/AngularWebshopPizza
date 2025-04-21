@@ -1,0 +1,47 @@
+<div class="order-management-container">
+    <div class="header">
+        <h1>Order Management</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading orders...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && orders.length === 0" class="no-orders">
+        No orders found.
+    </div>
+
+    <table *ngIf="!loading && orders.length > 0" class="orders-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orders">
+                <td>{{ order.id }}</td>
+                <td>{{ order.createdAt | date: 'medium' }}</td>
+                <td>{{ 'User #' + order.userId }}</td>
+                <td>€{{ order.totalAmount }}</td>
+                <td>
+                    <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase()">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td class="actions">
+                    <button class="edit-btn" *ngIf="order.id !== undefined" (click)="editOrder(order.id)">Edit</button>
+                    <button class="delete-btn" *ngIf="order.id !== undefined" (click)="deleteOrder(order.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

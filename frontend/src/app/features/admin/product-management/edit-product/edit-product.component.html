@@ -1,0 +1,71 @@
+<div class="edit-product-container">
+    <div class="header">
+        <h1>{{ isNewProduct ? 'Create New Product' : 'Edit Product' }}</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        Loading...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!loading" class="product-form">
+        <div class="form-group">
+            <label for="name">Product Name*</label>
+            <input type="text" id="name" formControlName="name" class="form-control" [ngClass]="{ 'invalid': isFieldInvalid('name') }">
+            <div *ngIf="isFieldInvalid('name')" class="error-hint">
+                Product name is required (max 100 characters)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description*</label>
+            <textarea id="description" formControlName="description" class="form-control" rows="4" [ngClass]="{ 'invalid': isFieldInvalid('description') }"></textarea>
+            <div *ngIf="isFieldInvalid('description')" class="error-hint">
+                Description is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price (€)*</label>
+            <input type="number" id="price" formControlName="price" class="form-control" step="0.01" min="0.01" [ngClass]="{ 'invalid': isFieldInvalid('price') }">
+            <div *ngIf="isFieldInvalid('price')" class="error-hint">
+                Price is required and must be at least 0.01
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input type="text" id="imageUrl" formControlName="imageUrl" class="form-control">
+            <div class="image-preview" *ngIf="productForm.get('imageUrl')?.value">
+                <img [src]="productForm.get('imageUrl')?.value" alt="Product Preview">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category*</label>
+            <select id="category" formControlName="category" class="form-control" [ngClass]="{ 'invalid': isFieldInvalid('category') }">
+                <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+            </select>
+            <div *ngIf="isFieldInvalid('category')" class="error-hint">
+                Category is required
+            </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                <input type="checkbox" id="isAvailable" formControlName="isAvailable">
+                <span class="label-text">Available for sale</span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+            <button type="submit" class="save-btn" [disabled]="loading">
+                {{ isNewProduct ? 'Create Product' : 'Save Changes' }}
+            </button>
+        </div>
+    </form>
+</div>

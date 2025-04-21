@@ -1,0 +1,65 @@
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a routerLink="/">
+          <h1>Pizza Deliziosa</h1>
+        </a>
+      </div>
+      <nav class="nav-desktop">
+        <ul>
+          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+          <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+          <!-- Show cart only for authenticated users -->
+          <li><a routerLink="/cart" routerLinkActive="active">Cart</a></li>
+          <!-- Show orders only for authenticated users -->
+          <li *ngIf="isAuthenticated"><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+          <!-- Show admin dashboard only for admins -->
+          <li *ngIf="isAdmin()"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons">
+        <!-- Show when not authenticated -->
+        <ng-container *ngIf="!isAuthenticated">
+          <a routerLink="/login" class="login-button">Login</a>
+          <a routerLink="/register" class="register-button">Register</a>
+        </ng-container>
+        
+        <!-- Show when authenticated -->
+        <ng-container *ngIf="isAuthenticated">
+          <div class="user-info">
+            <span class="username">{{ currentUser?.username }}</span>
+            <button class="logout-button" (click)="logout()">Logout</button>
+          </div>
+        </ng-container>
+      </div>
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" [class.open]="isMenuOpen">
+    <ul>
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Home</a></li>
+      <li><a routerLink="/about" routerLinkActive="active" (click)="toggleMenu()">About Us</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active" (click)="toggleMenu()">Contact</a></li>
+      
+      <!-- Auth options for mobile -->
+      <ng-container *ngIf="!isAuthenticated">
+        <li><a routerLink="/login" routerLinkActive="active" (click)="toggleMenu()">Login</a></li>
+        <li><a routerLink="/register" routerLinkActive="active" (click)="toggleMenu()">Register</a></li>
+      </ng-container>
+      
+      <!-- User options for mobile -->
+      <ng-container *ngIf="isAuthenticated">
+        <li><a routerLink="/menu" routerLinkActive="active" (click)="toggleMenu()">Menu</a></li>
+        <li><a routerLink="/cart" routerLinkActive="active" (click)="toggleMenu()">Cart</a></li>
+        <li><a routerLink="/orders" routerLinkActive="active" (click)="toggleMenu()">Orders</a></li>
+        <li *ngIf="isAdmin()"><a routerLink="/admin" routerLinkActive="active" (click)="toggleMenu()">Admin</a></li>
+        <li><a (click)="logout(); toggleMenu()">Logout</a></li>
+      </ng-container>
+    </ul>
+  </nav>
+</header> 
