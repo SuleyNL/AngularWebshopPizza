@@ -39,4 +39,4 @@ ENV API_URL=http://backend:8080
 EXPOSE 80
 
 # When the container starts, replace API_URL in the JS files with the value from environment variable
-CMD ["/bin/sh", "-c", "find /usr/share/nginx/html -type f -name '*.js' -exec sed -i \"s|{{API_URL}}|$API_URL|g\" {} \\; && nginx -g 'daemon off;'"]
+CMD ["/bin/sh", "-c", "find /usr/share/nginx/html -type f -name '*.js' -exec sed -i \"s|{{API_URL}}|$API_URL|g\" {} \\; && sed -i \"s|{{API_URL}}|$API_URL|g\" /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
