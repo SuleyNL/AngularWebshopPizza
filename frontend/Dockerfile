@@ -1,5 +1,5 @@
 ### STAGE 1: Build Angular app ###
-FROM node:18-alpine AS build
+FROM node:slim AS build
 
 # Set working directory
 WORKDIR /app
@@ -15,6 +15,7 @@ COPY . .
 
 # Build the Angular app
 RUN npm run build
+
 
 ### STAGE 2: Serve with Nginx ###
 FROM nginx:alpine
