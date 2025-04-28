@@ -20,7 +20,7 @@ RUN npm run build
 ### STAGE 2: Serve with Nginx ###
 FROM nginx:alpine
 
-# Install envsubst (for replacing ${API_URL})
+# Install envsubst
 RUN apk add --no-cache gettext
 
 # Copy built app
@@ -28,8 +28,8 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=build /app/dist/pizza-webshop-frontend /usr/share/nginx/html
 
-# Copy nginx config (with ${API_URL} placeholder)
+# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 
-# Replace ${API_URL} at runtime and start NGINX
-CMD ["/bin/sh", "-c", "envsubst '${API_URL}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+# Startup command
+CMD ["sh", "-c", "export ESCAPED_API_URL=$(echo $API_URL | sed 's/[\/&]/\\&/g'); sed \"s/http:\/\/API_URL_PLACEHOLDER/$ESCAPED_API_URL/g\" /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
