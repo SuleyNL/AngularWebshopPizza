@@ -1,6 +1,7 @@
 package com.pizza.config;
 
 import com.pizza.model.Order;
+import com.pizza.model.OrderItem;
 import com.pizza.model.Product;
 import com.pizza.model.Role;
 import com.pizza.model.User;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -182,52 +184,110 @@ public class DataSeeder implements CommandLineRunner {
         User customer = userRepository.findByUsername("customer")
                 .orElseThrow(() -> new RuntimeException("Customer user not found"));
         
-        // Create 4 orders with creative details
-        List<Order> orders = new ArrayList<>();
+        // Get available products to add to orders
+        List<Product> availableProducts = productRepository.findByIsAvailableTrue();
+        if (availableProducts.isEmpty()) {
+            throw new RuntimeException("No available products found for creating orders");
+        }
         
-        // Order 1: Family dinner
-        Order familyDinner = new Order();
-        familyDinner.setUser(customer);
-        familyDinner.setStatus(Order.OrderStatus.DELIVERED);
-        familyDinner.setDeliveryAddress("123 Main St, Apt 4B, New York, NY 10001");
-        familyDinner.setDeliveryPhone("555-123-4567");
-        familyDinner.setTotalAmount(new BigDecimal("42.50"));
-        familyDinner.setCreatedAt(LocalDateTime.now().minusDays(5));
-        orders.add(familyDinner);
-    
-        // Order 2: Office lunch
-        Order officeLunch = new Order();
-        officeLunch.setUser(customer);
-        officeLunch.setStatus(Order.OrderStatus.CONFIRMED);
-        officeLunch.setDeliveryAddress("555 Business Plaza, Floor 12, Boston, MA 02108");
-        officeLunch.setDeliveryPhone("555-234-5678");
-        officeLunch.setTotalAmount(new BigDecimal("78.25"));
-        officeLunch.setCreatedAt(LocalDateTime.now().minusDays(1));
-        orders.add(officeLunch);
-    
-        // Order 3: Late night craving
-        Order lateNight = new Order();
-        officeLunch.setUser(customer);
-        lateNight.setStatus(Order.OrderStatus.PENDING);
-        lateNight.setDeliveryAddress("789 College Ave, Dorm B, Miami, FL 33139");
-        lateNight.setDeliveryPhone("555-345-6789");
-        lateNight.setTotalAmount(new BigDecimal("24.99"));
-        lateNight.setCreatedAt(LocalDateTime.now().minusHours(2));
-        orders.add(lateNight);
-    
-        // Order 4: Cancelled order
-        Order cancelled = new Order();
-        cancelled.setUser(customer);
-        cancelled.setStatus(Order.OrderStatus.CANCELLED);
-        cancelled.setDeliveryAddress("321 Mountain View Rd, Denver, CO 80202");
-        cancelled.setDeliveryPhone("555-456-7890");
-        cancelled.setTotalAmount(new BigDecimal("36.75"));
-        cancelled.setCreatedAt(LocalDateTime.now().minusDays(3));
-        orders.add(cancelled);
+        Random random = new Random();
         
-        // Save all orders
-        orderRepository.saveAll(orders);
+        // Create and save orders one at a time to ensure OrderItems are saved correctly
+        // Order 1: Family dinner with 3 items
+        createOrderWithItems(customer, 
+            Order.OrderStatus.DELIVERED, 
+            "123 Main St, Apt 4B, New York, NY 10001", 
+            "555-123-4567", 
+            LocalDateTime.now().minusDays(5), 
+            availableProducts, 
+            3, 
+            random);
+        
+        // Order 2: Office lunch with 5 items
+        createOrderWithItems(customer, 
+            Order.OrderStatus.CONFIRMED, 
+            "555 Business Plaza, Floor 12, Boston, MA 02108", 
+            "555-234-5678", 
+            LocalDateTime.now().minusDays(1), 
+            availableProducts, 
+            5, 
+            random);
+        
+        // Order 3: Late night craving with 1 item
+        createOrderWithItems(customer, 
+            Order.OrderStatus.PENDING, 
+            "789 College Ave, Dorm B, Miami, FL 33139", 
+            "555-345-6789", 
+            LocalDateTime.now().minusHours(2), 
+            availableProducts, 
+            1, 
+            random);
+        
+        // Order 4: Cancelled order with 2 items
+        createOrderWithItems(customer, 
+            Order.OrderStatus.CANCELLED, 
+            "321 Mountain View Rd, Denver, CO 80202", 
+            "555-456-7890", 
+            LocalDateTime.now().minusDays(3), 
+            availableProducts, 
+            2, 
+            random);
         
         System.out.println("Orders seeded successfully!");
+    }
+    
+    /**
+     * Helper method to create an order with items and save it to the database
+     */
+    private void createOrderWithItems(
+            User user, 
+            Order.OrderStatus status, 
+            String address, 
+            String phone, 
+            LocalDateTime createdAt, 
+            List<Product> availableProducts, 
+            int itemCount,
+            Random random) {
+        
+        // First, create the order with initial totalAmount = 0
+        Order order = Order.builder()
+                .user(user)
+                .status(status)
+                .deliveryAddress(address)
+                .deliveryPhone(phone)
+                .createdAt(createdAt)
+                .totalAmount(BigDecimal.ZERO) // Initialize with zero to satisfy NOT NULL constraint
+                .build();
+        
+        // Create order items
+        for (int i = 0; i < itemCount; i++) {
+            // Get random product and quantity
+            Product product = availableProducts.get(random.nextInt(availableProducts.size()));
+            int quantity = random.nextInt(3) + 1; // 1-3 items
+            
+            // Create OrderItem with calculated totalPrice
+            BigDecimal unitPrice = product.getPrice();
+            BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity));
+            
+            OrderItem item = OrderItem.builder()
+                    .product(product)
+                    .quantity(quantity)
+                    .unitPrice(unitPrice)
+                    .totalPrice(totalPrice) // Set the totalPrice explicitly
+                    .order(order)
+                    .build();
+            
+            // Add to order and update order's total amount
+            order.getItems().add(item);
+        }
+        
+        // Recalculate the total amount before saving
+        order.recalculateTotalAmount();
+        
+        // Debug output
+        System.out.println("Created order with " + order.getItems().size() + " items, total amount: " + order.getTotalAmount());
+        
+        // Save the order to the database - this should cascade to the order items
+        orderRepository.save(order);
     }
 } 

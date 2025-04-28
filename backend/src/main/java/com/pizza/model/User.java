@@ -12,6 +12,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+    @NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role")
+    // ... existing named queries ...
+})
 @Table(
     name = "users",
     indexes = {
