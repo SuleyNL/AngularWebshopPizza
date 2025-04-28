@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "postinstall": "ng build --configuration production"
+    //"watch": "ng build --watch --configuration development",
+    //"test": "ng test",
+    //"postinstall": "ng build --configuration production"
   },
   "private": true,
   "dependencies": {
