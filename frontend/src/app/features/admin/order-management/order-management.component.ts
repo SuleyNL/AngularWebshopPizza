@@ -40,6 +40,11 @@ export class OrderManagementComponent implements OnInit {
     });
   }
 
+  createOrder(): void {
+    // For a new order, navigate to edit page with id 0
+    this.router.navigate(['/admin/orders/edit', 0]);
+  }
+
   editOrder(id: number | undefined): void {
     if (typeof id === 'number') {
       this.router.navigate(['/admin/orders/edit', id]);
@@ -55,9 +60,15 @@ export class OrderManagementComponent implements OnInit {
     }
     
     if (confirm('Are you sure you want to delete this order?')) {
-      // In a real application, you would call a service method to delete the order
-      // For now, just update the local list to simulate deletion
-      this.orders = this.orders.filter(o => o.id !== id);
+      this.orderService.deleteOrder(id).subscribe({
+        next: () => {
+          this.orders = this.orders.filter(o => o.id !== id);
+        },
+        error: (err) => {
+          this.error = 'Failed to delete order. Please try again.';
+          console.error(err);
+        }
+      });
     }
   }
 }

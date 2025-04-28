@@ -7,8 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "order_items")
+@Table(
+    name = "order_items",
+    indexes = {
+        @Index(name = "idx_order", columnList = "order_id"),
+    }
+    )
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,13 +28,11 @@ public class OrderItem {
     
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore // Add this annotation to prevent circular reference in JSON serialization
     private Order order;
     
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
-    
-    @ManyToOne
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id")
     private Product product;
     
     @Column(nullable = false)
@@ -36,11 +41,15 @@ public class OrderItem {
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
     
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total_price", nullable = true, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
-    public static Object builder() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    @PrePersist
+    @PreUpdate
+    private void calculateTotalPrice() {
+        if (unitPrice != null && quantity != null) {
+            this.totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity));
+        }
     }
+
 } 

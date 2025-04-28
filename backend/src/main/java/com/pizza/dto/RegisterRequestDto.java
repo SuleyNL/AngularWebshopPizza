@@ -15,4 +15,5 @@ public class RegisterRequestDto {
     private String lastName;
     private String address;
     private String phone;
+    private String role;
 } 

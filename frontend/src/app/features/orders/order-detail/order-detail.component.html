@@ -1,0 +1,87 @@
+<div class="order-detail-container">
+  <div class="container">
+    <div class="header">
+      <button mat-button class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Back to Orders
+      </button>
+      <h1>Order Details</h1>
+    </div>
+    
+    <!-- Loading state -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading order details...</p>
+    </div>
+    
+    <!-- Error state -->
+    <div *ngIf="error && !loading" class="error-container">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="goBack()">Return to Orders</button>
+    </div>
+    
+    <!-- Order details -->
+    <div *ngIf="order && !loading && !error" class="order-content">
+      <div class="order-header">
+        <div class="order-info">
+          <h2>Order #{{ order.id }}</h2>
+          <p class="order-date">Placed on: {{ order.createdAt | date:'medium' }}</p>
+        </div>
+        <div class="order-status" [ngClass]="getStatusClass(order.status)">
+          {{ order.status }}
+        </div>
+      </div>
+      
+      <mat-divider></mat-divider>
+      
+      <div class="order-section">
+        <h3>Delivery Information</h3>
+        <div class="delivery-info">
+          <div>
+            <strong>Address:</strong>
+            <p>{{ order.deliveryAddress }}</p>
+          </div>
+          <div>
+            <strong>Phone:</strong>
+            <p>{{ order.deliveryPhone }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <mat-divider></mat-divider>
+      
+      <div class="order-section">
+        <h3>Order Items</h3>
+        <div class="order-items">
+          <div *ngFor="let item of order.orderItems" class="item-card">
+            <div class="item-image" *ngIf="item.product?.imageUrl">
+              <img [src]="item.product?.imageUrl" [alt]="item.product?.name">
+            </div>
+            <div class="item-details">
+              <h4>{{ item.product?.name }}</h4>
+              <p class="item-description">{{ item.product?.description }}</p>
+              <div class="item-meta">
+                <span class="quantity">Quantity: {{ item.quantity }}</span>
+                <span class="price">Unit Price: ${{ item.unitPrice.toFixed(2) }}</span>
+                <span class="total">Total: ${{ item.totalPrice.toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <mat-divider></mat-divider>
+      
+      <div class="order-summary">
+        <div class="summary-line">
+          <span>Items:</span>
+          <span>{{ getItemsTotal() }}</span>
+        </div>
+        <div class="summary-line total">
+          <span>Total Amount:</span>
+          <span>${{ order.totalAmount.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

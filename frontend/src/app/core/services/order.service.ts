@@ -1,220 +1,162 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map, of } from 'rxjs';
-import { Order, CreateOrderRequest } from '../models/order.model';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, map, of, throwError, catchError } from 'rxjs';
+import { Order, UpdateOrderRequest } from '../models/order.model';
+import { OrderItem } from '../models/order-item.model';
 import { environment } from '../../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   private readonly API_URL = `${environment.apiUrl}/api/orders`;
-  
-  // Mock data for testing until backend is integrated
-  private mockOrders: Order[] = [
-    {
-      id: 1,
-      userId: 1,
-      totalAmount: 35.97,
-      status: 'DELIVERED' as any,
-      discountAmount: 0,
-      deliveryAddress: '123 Main St, Anytown, USA',
-      deliveryPhone: '555-123-4567',
-      createdAt: new Date('2023-04-15T10:30:00'),
-      items: [
-        {
-          id: 1,
-          productId: 1,
-          product: {
-            id: 1,
-            name: 'Margherita',
-            description: 'Classic pizza with tomato sauce, mozzarella cheese, and fresh basil',
-            price: 11.99,
-            category: 'PIZZA',
-            isAvailable: true
-          },
-          quantity: 2,
-          unitPrice: 11.99,
-          totalPrice: 23.98
-        },
-        {
-          id: 2,
-          productId: 3,
-          product: {
-            id: 3,
-            name: 'Caesar Salad',
-            description: 'Fresh romaine lettuce with Caesar dressing, croutons, and parmesan cheese',
-            price: 5.99,
-            category: 'SIDE',
-            isAvailable: true
-          },
-          quantity: 2,
-          unitPrice: 5.99,
-          totalPrice: 11.98
-        }
-      ]
-    },
-    {
-      id: 2,
-      userId: 1,
-      totalAmount: 29.97,
-      status: 'CONFIRMED' as any,
-      discountAmount: 5,
-      deliveryAddress: '123 Main St, Anytown, USA',
-      deliveryPhone: '555-123-4567',
-      createdAt: new Date('2023-04-20T18:45:00'),
-      items: [
-        {
-          id: 3,
-          productId: 2,
-          product: {
-            id: 2,
-            name: 'Pepperoni',
-            description: 'Classic pizza with tomato sauce, mozzarella cheese, and pepperoni',
-            price: 13.99,
-            category: 'PIZZA',
-            isAvailable: true
-          },
-          quantity: 1,
-          unitPrice: 13.99,
-          totalPrice: 13.99
-        },
-        {
-          id: 4,
-          productId: 4,
-          product: {
-            id: 4,
-            name: 'Garlic Bread',
-            description: 'Freshly baked bread with garlic butter and herbs',
-            price: 4.99,
-            category: 'SIDE',
-            isAvailable: true
-          },
-          quantity: 2,
-          unitPrice: 4.99,
-          totalPrice: 9.98
-        },
-        {
-          id: 5,
-          productId: 5,
-          product: {
-            id: 5,
-            name: 'Soda',
-            description: 'Choice of cola, lemon-lime, or orange soda (600ml)',
-            price: 1.99,
-            category: 'BEVERAGE',
-            isAvailable: true
-          },
-          quantity: 3,
-          unitPrice: 1.99,
-          totalPrice: 5.97
-        }
-      ]
-    },
-    {
-      id: 3,
-      userId: 1,
-      totalAmount: 45.96,
-      status: 'PENDING' as any,
-      discountAmount: 0,
-      deliveryAddress: '123 Main St, Anytown, USA',
-      deliveryPhone: '555-123-4567',
-      createdAt: new Date('2023-04-25T20:15:00'),
-      items: [
-        {
-          id: 6,
-          productId: 6,
-          product: {
-            id: 6,
-            name: 'Supreme',
-            description: 'Loaded pizza with pepperoni, sausage, bell peppers, onions, and olives',
-            price: 15.99,
-            category: 'PIZZA',
-            isAvailable: true
-          },
-          quantity: 2,
-          unitPrice: 15.99,
-          totalPrice: 31.98
-        },
-        {
-          id: 7,
-          productId: 7,
-          product: {
-            id: 7,
-            name: 'Buffalo Wings',
-            description: '8 pieces of spicy buffalo wings served with blue cheese dip',
-            price: 9.99,
-            category: 'SIDE',
-            isAvailable: true
-          },
-          quantity: 1,
-          unitPrice: 9.99,
-          totalPrice: 9.99
-        },
-        {
-          id: 8,
-          productId: 5,
-          product: {
-            id: 5,
-            name: 'Soda',
-            description: 'Choice of cola, lemon-lime, or orange soda (600ml)',
-            price: 1.99,
-            category: 'BEVERAGE',
-            isAvailable: true
-          },
-          quantity: 2,
-          unitPrice: 1.99,
-          totalPrice: 3.98
-        }
-      ]
-    }
-  ];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
+
+  // In OrderService
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+  }
   
   getOrders(): Observable<Order[]> {
-    // When backend is ready, uncomment this
-    // return this.http.get<Order[]>(this.API_URL);
-    
-    // For now, return mock data
-    return of(this.mockOrders);
+    return this.http.get<Order[]>(this.API_URL, { 
+      headers: this.getAuthHeaders() 
+    }).pipe(
+      map(orders => orders.map(order => this.mapOrderResponse(order)))
+    );
+  }
+  
+  getOrdersForUser(userId: number): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.API_URL}/user/${userId}`, { 
+      headers: this.getAuthHeaders() 
+    }).pipe(
+      map(orders => orders.map(order => this.mapOrderResponse(order)))
+    );
   }
   
   getOrderById(id: number): Observable<Order> {
-    // When backend is ready, uncomment this
-    // return this.http.get<Order>(`${this.API_URL}/${id}`);
+    return this.http.get<any>(`${this.API_URL}/${id}`, { 
+      headers: this.getAuthHeaders() 
+    }).pipe(
+      map(order => this.mapOrderResponse(order))
+    );
+  }
+
+  createOrder(updateOrderRequest: UpdateOrderRequest): Observable<Order> {
+    const formattedRequest = this.formatOrderRequest(updateOrderRequest);
+    console.log('Formatted order request for CREATE:', formattedRequest);
     
-    // For now, return mock data
-    const order = this.mockOrders.find(o => o.id === id);
-    return of(order as Order);
+    // Get token from auth service
+    const token = this.authService.getToken();
+    if (!token) {
+      console.error('No authentication token available');
+      return throwError(() => 'Authentication required. Please log in and try again.');
+    }
+    
+    console.log('Sending request with auth token:', !!token);
+    console.log('Creating order for user:', JSON.stringify(updateOrderRequest)); 
+
+    
+    return this.http.post<any>(this.API_URL, formattedRequest, { 
+      headers: this.getAuthHeaders() 
+    })
+      .pipe(
+        map(response => this.mapOrderResponse(response)),
+        catchError(this.handleError)
+      );
   }
   
-  createOrder(orderRequest: CreateOrderRequest): Observable<Order> {
-    // When backend is ready, uncomment this
-    // return this.http.post<Order>(this.API_URL, orderRequest);
+  updateOrder(id: number, order: Partial<Order>): Observable<Order> {
+    const formattedOrder = this.formatOrderRequest(order);
+    console.log('Formatted order request for UPDATE:', formattedOrder);
     
-    // For now, return mock response
-    const newOrderId = this.mockOrders.length + 1;
-    const now = new Date();
+    // Get token from auth service
+    const token = this.authService.getToken();
+    if (!token) {
+      console.error('No authentication token available');
+      return throwError(() => 'Authentication required. Please log in and try again.');
+    }
     
-    // This would normally come from the backend after processing
-    const newOrder: Order = {
-      id: newOrderId,
-      userId: 1,
-      totalAmount: 0, // Calculated on server
-      status: 'PENDING' as any,
-      discountAmount: 0,
-      deliveryAddress: orderRequest.deliveryAddress,
-      deliveryPhone: orderRequest.deliveryPhone,
-      createdAt: now,
-      updatedAt: now,
-      items: []
-    };
+    console.log('Sending update request with auth token:', !!token);
     
-    return of(newOrder);
+    return this.http.put<any>(`${this.API_URL}/${id}`, formattedOrder, { 
+      headers: this.getAuthHeaders() 
+    })
+      .pipe(
+        map(response => this.mapOrderResponse(response)),
+        catchError(this.handleError)
+      );
   }
   
-  calculateOrderTotal(items: { productId: number; quantity: number; unitPrice: number }[]): number {
-    return items.reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
+  deleteOrder(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${id}`, { 
+      headers: this.getAuthHeaders() 
+    });
+  }
+  
+  calculateOrderTotal(orderItems: { productId: number; quantity: number; unitPrice: number }[]): number {
+    return orderItems.reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
+  }
+  
+  private formatOrderRequest(order: any): any {
+    const formattedOrder = { ...order };
+    
+    // If we have orderItems, convert to items for the backend
+    if (formattedOrder.orderItems && !formattedOrder.items) {
+      formattedOrder.items = formattedOrder.orderItems;
+      delete formattedOrder.orderItems;
+    }
+    
+    if (formattedOrder.deliveryAddress && typeof formattedOrder.deliveryAddress === 'object') {
+      const addr = formattedOrder.deliveryAddress;
+      formattedOrder.deliveryAddress = `${addr.address}, ${addr.city}, ${addr.postalCode}, ${addr.country}`.replace(/,\s*,/g, ',').replace(/^,\s*/, '').replace(/,\s*$/, '');
+    }
+    
+    return formattedOrder;
+  }
+  
+  private mapOrderResponse(order: any): Order {
+    if (!order) return order;
+    
+    // Map backend 'items' to frontend 'orderItems'
+    if (order.items && !order.orderItems) {
+      order.orderItems = order.items;
+    }
+    
+    return order as Order;
+  }
+  
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An unknown error occurred';
+    
+    if (error.status === 403) {
+      errorMessage = 'You do not have permission to perform this action. Please check your login status or contact an administrator.';
+      errorMessage+= JSON.stringify(error)
+      console.error('Authentication error (403):', error);
+    } else if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = `Error: ${error.error.message}`;
+      console.error('Client-side error:', error.error.message);
+    } else {
+      // Server-side error
+      errorMessage = error.error && typeof error.error === 'string' 
+        ? error.error 
+        : `Error Code: ${error.status}, Message: ${error.message}`;
+      
+      console.error(
+        `Server error - Status: ${error.status}, ` +
+        `Body:`, error.error
+      );
+    }
+    
+    return throwError(() => errorMessage);
   }
 } 

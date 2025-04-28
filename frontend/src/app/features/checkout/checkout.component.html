@@ -1,0 +1,116 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h2>Checkout</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Processing your order...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" *ngIf="!loading" class="checkout-form">
+    <div class="order-items-section">
+      <h3>Order Items</h3>
+      
+      <div formArrayName="orderItems">
+        <div *ngFor="let item of itemsFormArray.controls; let i = index" [formGroupName]="i" class="order-item">
+          <div class="product-info">
+            <div class="product-image" *ngIf="item.get('imageUrl')?.value">
+              <img [src]="item.get('imageUrl')?.value" [alt]="item.get('productName')?.value">
+            </div>
+            
+            <div class="product-details">
+              <ng-container *ngIf="!isProductSelected(i)">
+                <mat-form-field appearance="outline" class="product-name-field">
+                  <mat-label>Product Name</mat-label>
+                  <input matInput formControlName="productName" [matAutocomplete]="auto" placeholder="Start typing a product name">
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectProduct($event, i)">
+                    <mat-option *ngFor="let product of filteredProducts[i] | async" [value]="product.name">
+                      <div class="product-option">
+                        <img *ngIf="product.imageUrl" [src]="product.imageUrl" class="product-option-image" [alt]="product.name">
+                        <span>{{ product.name }}</span>
+                        <span class="product-option-price">€{{ product.price.toFixed(2) }}</span>
+                      </div>
+                    </mat-option>
+                  </mat-autocomplete>
+                  <mat-error *ngIf="isItemFieldInvalid(i, 'productName')">Product name is required</mat-error>
+                </mat-form-field>
+              </ng-container>
+              
+              <ng-container *ngIf="isProductSelected(i)">
+                <div class="selected-product-name">
+                  <h4>{{ item.get('productName')?.value }}</h4>
+                </div>
+              </ng-container>
+              
+              <p class="product-description" *ngIf="item.get('productDescription')?.value">{{ item.get('productDescription')?.value }}</p>
+              
+              <div class="product-price" *ngIf="item.get('unitPrice')?.value > 0">
+                Price: €{{ item.get('unitPrice')?.value.toFixed(2) }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="order-item-actions">
+            <mat-form-field appearance="outline" class="quantity-field">
+              <mat-label>Quantity</mat-label>
+              <input matInput type="number" formControlName="quantity" min="1" (change)="updateQuantity(i)">
+              <mat-error *ngIf="isItemFieldInvalid(i, 'quantity')">Quantity must be at least 1</mat-error>
+            </mat-form-field>
+            
+            <div class="item-total" *ngIf="item.get('unitPrice')?.value > 0 && item.get('quantity')?.value > 0">
+              Total: €{{ (item.get('unitPrice')?.value * item.get('quantity')?.value).toFixed(2) }}
+            </div>
+            
+            <button mat-icon-button color="warn" type="button" class="remove-item" (click)="removeItem(i)" *ngIf="itemsFormArray.length > 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <button mat-raised-button type="button" color="primary" class="add-item-btn" (click)="addEmptyItem()">
+        <mat-icon>add</mat-icon> Add Product
+      </button>
+    </div>
+
+    <div class="order-details-section">
+      <h3>Delivery Information</h3>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Delivery Address</mat-label>
+          <textarea matInput formControlName="deliveryAddress" placeholder="Street Address, City, Postal Code, Country" rows="3"></textarea>
+          <mat-error *ngIf="isFieldInvalid('deliveryAddress')">Delivery address is required</mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="deliveryPhone" placeholder="Enter your phone number">
+          <mat-error *ngIf="isFieldInvalid('deliveryPhone')">Valid phone number is required</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="order-summary">
+      <h3>Order Summary</h3>
+      
+      <div class="summary-row">
+        <span>Total:</span>
+        <span class="total-amount">€{{ orderForm.get('totalAmount')?.value.toFixed(2) }}</span>
+      </div>
+      
+      <div class="actions">
+        <button mat-stroked-button type="button" routerLink="/cart">Back to Cart</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          Place Order
+        </button>
+      </div>
+    </div>
+  </form>
+</div> 

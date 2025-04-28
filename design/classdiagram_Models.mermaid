@@ -1,0 +1,72 @@
+
+```mermaid
+classDiagram
+    class User {
+        +Long id
+        +String username
+        +String email
+        +String password
+        +String firstName
+        +String lastName
+        +String address
+        +String phone
+        +Role rolecdxsza
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+    }
+
+    class Product {
+        +Long id
+        +String name
+        +String description
+        +BigDecimal price
+        +String imageUrl
+        +String category
+        +boolean isAvailable
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+    }
+
+    class Order {
+        +Long id
+        +User user
+        +BigDecimal totalAmount
+        +OrderStatus status
+        +String deliveryAddress
+        +String deliveryPhone
+        +LocalDateTime createdAt
+        +LocalDateTime updatedAt
+        +OrderItem items
+    }
+
+    class OrderItem {
+        +Long id
+        +Order order
+        +Product product
+        +Integer quantity
+        +BigDecimal unitPrice
+        +BigDecimal totalPrice
+    }
+
+    class Role {
+        <<enumeration>>
+        CUSTOMER
+        ADMIN
+    }
+
+    class OrderStatus {
+        <<enumeration>>
+        PENDING
+        CONFIRMED
+        DELIVERED
+        CANCELLED
+    }
+
+    User "1" --> "0..*" Order : places
+    User "0..*" --> "1" Role : has
+
+    Order "1" --> "0..*" OrderItem : contains
+    Order "0..*" --> "1" OrderStatus : has
+
+    OrderItem "1" --> "1" Product : refers
+```

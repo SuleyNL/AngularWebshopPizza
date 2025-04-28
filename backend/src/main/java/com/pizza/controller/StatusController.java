@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class HomeController {
+public class StatusController {
     
     @GetMapping("/status")
     public ResponseEntity<Map<String, String>> getStatus() {

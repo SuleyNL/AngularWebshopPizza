@@ -37,8 +37,11 @@
                 <td>{{ product.category }}</td>
                 <td>{{ product.isAvailable ? 'Yes' : 'No' }}</td>
                 <td class="actions">
-                    <button class="edit-btn" *ngIf="product.id !== undefined" (click)="editProduct(product.id)">Edit</button>
-                    <button class="delete-btn" *ngIf="product.id !== undefined" (click)="deleteProduct(product.id)">Delete</button>
+                    <div class="action-buttons">
+                        <button class="edit-btn" *ngIf="product.id !== undefined" (click)="editProduct(product.id)">Edit</button>
+                        <button class="delete-btn" *ngIf="product.id !== undefined" (click)="deleteProduct(product.id)">Delete</button>                        
+                    </div>
+
                 </td>
             </tr>
         </tbody>

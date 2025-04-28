@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { Order, OrderStatus } from '../../../core/models/order.model';
 import { OrderService } from '../../../core/services/order.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-order-list',
@@ -23,21 +25,39 @@ export class OrderListComponent implements OnInit {
   orders: Order[] = [];
   loading = true;
   error = false;
+  currentUser: User | null = null;
   
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private orderService: OrderService,
+    private authService: AuthService
+  ) {}
   
   ngOnInit(): void {
-    this.fetchOrders();
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      if (user) {
+        this.fetchUserOrders(user.id);
+      } else {
+        this.loading = false;
+        this.error = true;
+      }
+    });
   }
   
-  fetchOrders(): void {
-    this.orderService.getOrders().subscribe({
+  fetchUserOrders(userId: number | undefined): void {
+    if (!userId) {
+      this.loading = false;
+      this.error = true;
+      return;
+    }
+    
+    this.orderService.getOrdersForUser(userId).subscribe({
       next: (orders) => {
         this.orders = orders;
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error fetching orders:', err);
+        console.error('Error fetching user orders:', err);
         this.error = true;
         this.loading = false;
       }
@@ -45,7 +65,8 @@ export class OrderListComponent implements OnInit {
   }
   
   getItemCount(order: Order): number {
-    return order.items.reduce((count, item) => count + item.quantity, 0);
+    if (!order.orderItems) return 0;
+    return order.orderItems.reduce((count: number, item) => count + item.quantity, 0);
   }
   
   getStatusClass(status: OrderStatus): string {

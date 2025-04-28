@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/api' // Production API URL (change as needed for your production environment)
+  apiUrl: '/api'  // This will be proxied to the actual backend URL via Railway's proxy configuration
 }; 

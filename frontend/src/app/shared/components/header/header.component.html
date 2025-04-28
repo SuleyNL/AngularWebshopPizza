@@ -8,12 +8,15 @@
       </div>
       <nav class="nav-desktop">
         <ul>
-          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
-          <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
-          <!-- Show cart only for authenticated users -->
-          <li><a routerLink="/cart" routerLinkActive="active">Cart</a></li>
-          <!-- Show orders only for authenticated users -->
-          <li *ngIf="isAuthenticated"><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+          <!-- Show regular navigation only for non-admin users -->
+          <ng-container *ngIf="!isAdmin()">
+            <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+            <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+            <!-- Show cart only for authenticated users who are not admins -->
+            <li *ngIf="isAuthenticated"><a routerLink="/cart" routerLinkActive="active">Cart</a></li>
+            <!-- Show orders only for authenticated users who are not admins -->
+            <li *ngIf="isAuthenticated"><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+          </ng-container>
           <!-- Show admin dashboard only for admins -->
           <li *ngIf="isAdmin()"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
         </ul>
@@ -42,9 +45,12 @@
   </div>
   <nav class="nav-mobile" [class.open]="isMenuOpen">
     <ul>
-      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Home</a></li>
-      <li><a routerLink="/about" routerLinkActive="active" (click)="toggleMenu()">About Us</a></li>
-      <li><a routerLink="/contact" routerLinkActive="active" (click)="toggleMenu()">Contact</a></li>
+      <!-- Show regular navigation only for non-admin users -->
+      <ng-container *ngIf="!isAdmin()">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()">Home</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" (click)="toggleMenu()">About Us</a></li>
+        <li><a routerLink="/contact" routerLinkActive="active" (click)="toggleMenu()">Contact</a></li>
+      </ng-container>
       
       <!-- Auth options for mobile -->
       <ng-container *ngIf="!isAuthenticated">
@@ -53,13 +59,19 @@
       </ng-container>
       
       <!-- User options for mobile -->
-      <ng-container *ngIf="isAuthenticated">
+      <ng-container *ngIf="isAuthenticated && !isAdmin()">
         <li><a routerLink="/menu" routerLinkActive="active" (click)="toggleMenu()">Menu</a></li>
         <li><a routerLink="/cart" routerLinkActive="active" (click)="toggleMenu()">Cart</a></li>
         <li><a routerLink="/orders" routerLinkActive="active" (click)="toggleMenu()">Orders</a></li>
-        <li *ngIf="isAdmin()"><a routerLink="/admin" routerLinkActive="active" (click)="toggleMenu()">Admin</a></li>
-        <li><a (click)="logout(); toggleMenu()">Logout</a></li>
       </ng-container>
+      
+      <!-- Admin options for mobile -->
+      <ng-container *ngIf="isAdmin()">
+        <li><a routerLink="/admin" routerLinkActive="active" (click)="toggleMenu()">Admin</a></li>
+      </ng-container>
+      
+      <!-- Logout for all authenticated users -->
+      <li *ngIf="isAuthenticated"><a (click)="logout(); toggleMenu()">Logout</a></li>
     </ul>
   </nav>
 </header> 

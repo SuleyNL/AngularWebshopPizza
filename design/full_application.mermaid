@@ -1,0 +1,54 @@
+classDiagram
+    class Controller {
+        <<stereotype>>
+    }
+    
+    class AuthController {
+        +login(AuthRequestDto request) AuthResponseDto
+        +register(RegisterRequestDto request) ResponseEntity
+    }
+    
+    class HomeController {
+        +index() String
+        +about() String
+    }
+    
+    class ProductController {
+        +getAllProducts() List~Product~
+        +getProduct(Long id) Product
+        +createProduct(Product product) Product
+        +updateProduct(Long id, Product product) Product
+        +deleteProduct(Long id) void
+    }
+    
+    class OrderController {
+        +getAllOrders() List~Order~
+        +getOrder(Long id) Order
+        +createOrder(Order order) Order
+        +updateOrderStatus(Long id, String status) Order
+    }
+    
+    class UserController {
+        +getAllUsers() List~User~
+        +getUser(Long id) User
+        +updateUser(Long id, User user) User
+    }
+    
+    class MessageController {
+        +getAllMessages() List~Message~
+        +createMessage(Message message) Message
+    }
+    
+    Controller <|-- AuthController : implements
+    Controller <|-- HomeController : implements
+    Controller <|-- ProductController : implements
+    Controller <|-- OrderController : implements
+    Controller <|-- UserController : implements
+    Controller <|-- MessageController : implements
+    
+    AuthController --> UserRepository : uses
+    AuthController --> JwtUtil : uses
+    ProductController --> ProductRepository : uses
+    OrderController --> OrderRepository : uses
+    UserController --> UserRepository : uses
+    MessageController --> MessageRepository : uses

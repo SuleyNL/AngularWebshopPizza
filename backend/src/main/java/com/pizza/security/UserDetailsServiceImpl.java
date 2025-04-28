@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             
             LOGGER.debug("User found: {}, with role: {}", username, user.getRole());
             
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
             LOGGER.debug("Granted authority: {}", authority.getAuthority());
             
             return new org.springframework.security.core.userdetails.User(

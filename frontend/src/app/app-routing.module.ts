@@ -11,6 +11,7 @@ import { UserManagementComponent } from './features/admin/user-management/user-m
 import { EditUserComponent } from './features/admin/user-management/edit-user/edit-user.component';
 import { MessageManagementComponent } from './features/admin/message-management/message-management.component';
 import { EditMessageComponent } from './features/admin/message-management/edit-message/edit-message.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,7 +20,9 @@ const routes: Routes = [
   { path: 'about', loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent) },
   { path: 'contact', loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent) },
   { path: 'cart', loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent) },
-  { path: 'orders', loadComponent: () => import('./features/orders/order-list/order-list.component').then(m => m.OrderListComponent) },
+  { path: 'checkout', loadComponent: () => import('./features/checkout/checkout.component').then(m => m.CheckoutComponent), canActivate: [AuthGuard] },
+  { path: 'orders', loadComponent: () => import('./features/orders/order-list/order-list.component').then(m => m.OrderListComponent), canActivate: [AuthGuard] },
+  { path: 'orders/:id', loadComponent: () => import('./features/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent), canActivate: [AuthGuard] },
   { path: 'admin', loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
   { path: 'admin/products', component: ProductManagementComponent },
   { path: 'admin/products/edit/:id', component: EditProductComponent },

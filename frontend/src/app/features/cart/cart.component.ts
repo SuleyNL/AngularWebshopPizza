@@ -24,7 +24,6 @@ import { Subscription } from 'rxjs';
 export class CartComponent implements OnInit, OnDestroy {
   cartItems: CartItem[] = [];
   subtotal = 0;
-  tax = 0;
   total = 0;
   private cartSubscription: Subscription | null = null;
   
@@ -52,8 +51,7 @@ export class CartComponent implements OnInit, OnDestroy {
       (sum, item) => sum + (item.product.price * item.quantity), 
       0
     );
-    this.tax = this.subtotal * 0.07; // Assuming 7% tax
-    this.total = this.subtotal + this.tax;
+    this.total = this.subtotal;
   }
   
   increaseQuantity(item: CartItem): void {

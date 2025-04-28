@@ -1,6 +1,8 @@
 <div class="user-management-container">
     <div class="header">
         <h1>User Management</h1>
+        <button class="create-btn" (click)="createUser()">Add New User</button>
+
     </div>
 
     <div *ngIf="loading" class="loading">

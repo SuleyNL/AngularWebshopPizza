@@ -25,7 +25,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     
     private final List<String> EXCLUDED_PATHS = Arrays.asList(
             "/api/auth/login",
-            "/api/auth/register"
+            "/api/auth/register",
+            "/api/auth/status",
+            "/api/products/**"
     );
     
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

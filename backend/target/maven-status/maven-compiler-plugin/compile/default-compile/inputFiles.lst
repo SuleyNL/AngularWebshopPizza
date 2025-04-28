@@ -2,6 +2,7 @@ C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\c
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\model\Order.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\controller\UserController.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\security\UserDetailsServiceImpl.java
+C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\dto\OrderItemDto.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\controller\OrderController.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\repository\MessageRepository.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\model\Message.java
@@ -13,12 +14,14 @@ C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\c
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\dto\RegisterRequestDto.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\model\Product.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\PizzaWebshopApplication.java
+C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\dto\OrderResponseDto.java
+C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\dto\OrderRequestDto.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\controller\ProductController.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\repository\UserRepository.java
+C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\controller\StatusController.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\dto\AuthRequestDto.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\model\OrderItem.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\controller\MessageController.java
-C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\controller\HomeController.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\dto\AuthResponseDto.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\security\JwtRequestFilter.java
 C:\School\IPRWC\AngularWebshopPizza7\AngularWebshopPizza\backend\src\main\java\com\pizza\security\JwtUtil.java

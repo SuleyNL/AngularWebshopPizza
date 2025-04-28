@@ -27,7 +27,7 @@ export class UserManagementComponent implements OnInit {
 
   loadUsers(): void {
     this.loading = true;
-    this.userService.getUsers().subscribe({
+    this.userService.getAllUsers().subscribe({
       next: (users) => {
         this.users = users;
         this.loading = false;
@@ -47,7 +47,10 @@ export class UserManagementComponent implements OnInit {
       this.error = 'Cannot edit user without a valid ID.';
     }
   }
-
+  createUser(): void {
+    // For a new user, navigate to edit page with id 0
+    this.router.navigate(['/admin/users/edit', 0]);
+  }
   deleteUser(id: number | undefined): void {
     if (typeof id !== 'number') {
       this.error = 'Cannot delete user without a valid ID.';

@@ -1,6 +1,7 @@
 <div class="order-management-container">
     <div class="header">
         <h1>Order Management</h1>
+        <button class="create-btn" (click)="createOrder()">Add New Order</button>
     </div>
 
     <div *ngIf="loading" class="loading">
@@ -30,7 +31,7 @@
             <tr *ngFor="let order of orders">
                 <td>{{ order.id }}</td>
                 <td>{{ order.createdAt | date: 'medium' }}</td>
-                <td>{{ 'User #' + order.userId }}</td>
+                <td>{{ order.user.username }}</td>
                 <td>€{{ order.totalAmount }}</td>
                 <td>
                     <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase()">

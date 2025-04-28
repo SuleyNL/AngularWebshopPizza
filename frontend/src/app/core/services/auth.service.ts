@@ -12,7 +12,7 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'current_user';
   
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
   
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
@@ -43,10 +43,11 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials, { headers })
       .pipe(
         tap(response => {
-          console.log('Login successful, received token and user data');
+          console.log('Login successful, received token and user data:', response);
           localStorage.setItem(this.TOKEN_KEY, response.token);
           
           const user: User = {
+            id: response.id, // Make sure this is included in the response
             username: response.username,
             role: response.role,
             email: '',  // These fields would be populated in a real app with a profile endpoint
@@ -54,6 +55,7 @@ export class AuthService {
             lastName: ''
           };
           
+          console.log('Setting user role:', response.role);
           localStorage.setItem(this.USER_KEY, JSON.stringify(user));
           this.currentUserSubject.next(user);
           this.isAuthenticatedSubject.next(true);
@@ -90,7 +92,9 @@ export class AuthService {
 
   isAdmin(): boolean {
     const user = this.currentUserSubject.value;
-    return user !== null && user.role === 'ADMIN';
+    const isUserAdmin = user !== null && user.role === 'ADMIN';
+    console.log('isAdmin check:', isUserAdmin, 'Current user role:', user?.role);
+    return isUserAdmin;
   }
   
   checkAuthStatus(): Observable<string> {

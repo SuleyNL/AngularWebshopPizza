@@ -78,8 +78,13 @@
 }
 
 .actions {
-    display: flex;
-    gap: 8px;
+    display: table-cell; /* Keeps it aligned with the row height */
+    vertical-align: middle; /* Ensures it's vertically centered */
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
     
     button {
         border: none;

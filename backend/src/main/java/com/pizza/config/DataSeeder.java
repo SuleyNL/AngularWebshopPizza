@@ -187,7 +187,7 @@ public class DataSeeder implements CommandLineRunner {
         
         // Order 1: Family dinner
         Order familyDinner = new Order();
-        familyDinner.setUserId(customer.getId());
+        familyDinner.setUser(customer);
         familyDinner.setStatus(Order.OrderStatus.DELIVERED);
         familyDinner.setDeliveryAddress("123 Main St, Apt 4B, New York, NY 10001");
         familyDinner.setDeliveryPhone("555-123-4567");
@@ -197,18 +197,17 @@ public class DataSeeder implements CommandLineRunner {
     
         // Order 2: Office lunch
         Order officeLunch = new Order();
-        officeLunch.setUserId(customer.getId());
+        officeLunch.setUser(customer);
         officeLunch.setStatus(Order.OrderStatus.CONFIRMED);
         officeLunch.setDeliveryAddress("555 Business Plaza, Floor 12, Boston, MA 02108");
         officeLunch.setDeliveryPhone("555-234-5678");
         officeLunch.setTotalAmount(new BigDecimal("78.25"));
-        officeLunch.setDiscountAmount(new BigDecimal("10.00")); // Corporate discount
         officeLunch.setCreatedAt(LocalDateTime.now().minusDays(1));
         orders.add(officeLunch);
     
         // Order 3: Late night craving
         Order lateNight = new Order();
-        lateNight.setUserId(customer.getId());
+        officeLunch.setUser(customer);
         lateNight.setStatus(Order.OrderStatus.PENDING);
         lateNight.setDeliveryAddress("789 College Ave, Dorm B, Miami, FL 33139");
         lateNight.setDeliveryPhone("555-345-6789");
@@ -218,12 +217,11 @@ public class DataSeeder implements CommandLineRunner {
     
         // Order 4: Cancelled order
         Order cancelled = new Order();
-        cancelled.setUserId(customer.getId());
+        cancelled.setUser(customer);
         cancelled.setStatus(Order.OrderStatus.CANCELLED);
         cancelled.setDeliveryAddress("321 Mountain View Rd, Denver, CO 80202");
         cancelled.setDeliveryPhone("555-456-7890");
         cancelled.setTotalAmount(new BigDecimal("36.75"));
-        cancelled.setDiscountAmount(BigDecimal.ZERO);
         cancelled.setCreatedAt(LocalDateTime.now().minusDays(3));
         orders.add(cancelled);
         

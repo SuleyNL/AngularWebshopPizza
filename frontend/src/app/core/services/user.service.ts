@@ -1,75 +1,71 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { User } from '../models/user.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private readonly API_URL = `${environment.apiUrl}/api/users`;
-  
-  // Mock data for testing
-  private mockUsers: User[] = [
-    {
-      id: 1,
-      username: 'john_doe',
-      email: 'john.doe@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'CUSTOMER'
-    },
-    {
-      id: 2,
-      username: 'jane_smith',
-      email: 'jane.smith@example.com',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      role: 'CUSTOMER'
-    },
-    {
-      id: 3,
-      username: 'admin_user',
-      email: 'admin@example.com',
-      firstName: 'Admin',
-      lastName: 'User',
-      role: 'ADMIN'
-    }
-  ];
 
   constructor(private http: HttpClient) { }
 
-  getUsers(): Observable<User[]> {
-    // When backend is ready, uncomment this
-    // return this.http.get<User[]>(this.API_URL);
-    
-    // For now, return mock data
-    return of(this.mockUsers);
+  getAllUsers(): Observable<User[]> {
+    console.log('Fetching all users from:', this.API_URL);
+    return this.http.get<User[]>(this.API_URL)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  getUser(id: number): Observable<User> {
-    // When backend is ready, uncomment this
-    // return this.http.get<User>(`${this.API_URL}/${id}`);
-    
-    // For now, return mock data
-    const user = this.mockUsers.find(u => u.id === id);
-    return of(user as User);
+  getUserById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.API_URL}/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  updateUser(id: number, user: User): Observable<User> {
-    // When backend is ready, uncomment this
-    // return this.http.put<User>(`${this.API_URL}/${id}`, user);
-    
-    // For now, return mock response
-    return of({ ...user, id });
+  updateUser(id: number, userData: Partial<User>): Observable<User> {
+    console.log('Updating user with role:', userData.role);
+    return this.http.put<User>(`${this.API_URL}/${id}`, userData)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  createUser(user: User): Observable<User> {
+    console.log('Creating user with role:', user.role);
+    return this.http.post<User>(this.API_URL, user)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   deleteUser(id: number): Observable<void> {
-    // When backend is ready, uncomment this
-    // return this.http.delete<void>(`${this.API_URL}/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An unknown error occurred';
     
-    // For now, return mock response
-    return of(undefined);
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = `Error: ${error.error.message}`;
+      console.error('Client-side error:', error.error.message);
+    } else {
+      // Server-side error
+      errorMessage = error.error || `Error Code: ${error.status}, Message: ${error.message}`;
+      console.error(
+        `Server error - Status: ${error.status}, ` +
+        `Body: ${JSON.stringify(error.error)}`
+      );
+    }
+    
+    return throwError(() => errorMessage);
   }
 }

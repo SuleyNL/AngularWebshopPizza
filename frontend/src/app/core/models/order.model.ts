@@ -1,22 +1,12 @@
-import { Product } from './product.model';
-
-export interface OrderItem {
-  id?: number;
-  productId: number;
-  product?: Product;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-}
+import { OrderItem } from './order-item.model';
+import { User } from './user.model';
 
 export interface Order {
   id?: number;
-  userId?: number;
-  items: OrderItem[];
+  user: User;
+  orderItems: OrderItem[];
   totalAmount: number;
   status: OrderStatus;
-  promocodeId?: number;
-  discountAmount: number;
   deliveryAddress: string;
   deliveryPhone: string;
   createdAt?: Date;
@@ -31,11 +21,29 @@ export enum OrderStatus {
 }
 
 export interface CreateOrderRequest {
-  items: {
-    productId: number;
-    quantity: number;
-  }[];
-  promocodeId?: number;
+  userId: number;
+  status: OrderStatus;
+  totalAmount: number;
   deliveryAddress: string;
   deliveryPhone: string;
+  orderItems: {
+    productId: number;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+  }[];
+}
+
+export interface UpdateOrderRequest {
+  userId?: number;
+  status?: OrderStatus;
+  totalAmount?: number;
+  deliveryAddress?: string;
+  deliveryPhone?: string;
+  orderItems?: {
+    productId: number;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+  }[];
 } 

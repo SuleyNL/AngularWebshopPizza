@@ -55,12 +55,21 @@ export class CartService {
   }
   
   private syncCartWithServer(): void {
-    // In a full implementation, this would sync local cart with server-side cart
-    // For now, we'll just use localStorage
+    // In a full implementation, this would sync local cart with server-side cart. for now its in localStorage
   }
   
   getCartItems(): CartItem[] {
     return this.cartItemsSubject.value;
+  }
+  
+  setCartItems(cartItems: CartItem[]): void {
+    // Filter out any invalid items (e.g., items with no product or quantity)
+    const validItems = cartItems.filter(item => 
+      item.product && item.product.id && item.quantity > 0
+    );
+    
+    this.cartItemsSubject.next(validItems);
+    this.saveCartToStorage();
   }
   
   addToCart(product: Product, quantity: number = 1): void {

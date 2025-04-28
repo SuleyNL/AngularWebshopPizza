@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
 import { OrderService } from './services/order.service';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
 
 @NgModule({
   declarations: [],
@@ -15,7 +16,12 @@ import { OrderService } from './services/order.service';
   providers: [
     AuthService,
     CartService,
-    OrderService
+    OrderService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
+      multi: true
+    }
   ]
 })
 export class CoreModule { } 
