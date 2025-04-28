@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:14-alpine
+    container_name: pizza-db
+    environment:
+      POSTGRES_DB: pizza_deliziosa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5431:5432" # Map external 5431 to internal 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pizza-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pizza-backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - JWT_SECRET=pizza_deliziosa_secret_key_for_production
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pizza-network
+    restart: unless-stopped
+
+networks:
+  pizza-network:
+    driver: bridge
+
+volumes:
+  postgres_data: 
