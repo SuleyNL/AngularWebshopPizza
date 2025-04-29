@@ -53,6 +53,33 @@ chmod +x run-docker.sh
    docker-compose down
    ```
 
+## Verifying the Backend is Online
+
+The backend provides two endpoints to check if it's running correctly:
+
+1. **Basic Status Check**:
+   ```
+   http://localhost:8080/api/status
+   ```
+   This will return basic information including the current status, application name, and server time.
+
+2. **Detailed Health Check**:
+   ```
+   http://localhost:8080/api/health
+   ```
+   This returns more detailed health information including JVM and OS details.
+
+Both endpoints are publicly accessible without authentication, making them ideal for monitoring and status verification.
+
+### Using in Production
+
+These endpoints are also available in production environments. They provide a simple way to:
+- Verify the application is running
+- Check which profile is active
+- See runtime details for troubleshooting
+
+You can integrate these endpoints with monitoring tools to set up automated health checks.
+
 ### Configuration
 
 The PostgreSQL database is configured with:
@@ -83,6 +110,7 @@ If you encounter any issues:
    docker-compose logs backend
    docker-compose logs postgres
    ```
+4. Check the status endpoints to verify the application is running correctly
 
 ## Development Without Docker
 

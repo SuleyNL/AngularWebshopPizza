@@ -18,6 +18,9 @@ RUN mvn package -DskipTests
 # Use a smaller JRE image for the runtime
 FROM eclipse-temurin:17-jre-alpine
 
+# Install curl for health checks
+RUN apk --no-cache add curl
+
 WORKDIR /app
 
 # Copy the JAR file from the build stage
