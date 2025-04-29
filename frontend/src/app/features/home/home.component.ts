@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 import { Subscription } from 'rxjs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -46,7 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   fetchPizzaMenu(): void {
-    this.http.get<Product[]>('http://localhost:8080/api/products')
+    this.http.get<Product[]>(`${environment.apiUrl}/api/products`)
       .subscribe({
         next: (products) => {
           this.pizzaMenu = products.filter(p => p.category === 'PIZZA');
