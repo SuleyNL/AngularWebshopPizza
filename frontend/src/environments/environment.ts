@@ -5,5 +5,6 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://angularwebshoppizza-production.up.railway.app/api' // API URL relative to the current host - will be handled by nginx
+  apiUrl: 'https://angularwebshoppizza-production.up.railway.app' // without api 
+  // actually it should be API URL relative to the current host - will be handled by nginx
 }; 
