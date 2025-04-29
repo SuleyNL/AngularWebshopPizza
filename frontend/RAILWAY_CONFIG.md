@@ -17,18 +17,25 @@ For example:
 API_URL=https://angularwebshoppizza-production.up.railway.app
 ```
 
-Note: Do not include a trailing slash in the API_URL value.
+Notes:
+1. The application will automatically handle trailing slashes, so you don't need to include one.
+2. Do NOT include `/api` at the end of the URL - the application handles this internally.
+3. Include the port (like `:8080`) only if your backend service requires it.
 
 ### How It Works
 
-1. When the Docker container starts, it:
-   - Substitutes the API_URL value into the Nginx configuration
-   - Updates the compiled JavaScript files to use the correct API endpoint
-   - Starts Nginx with the updated configuration
+Our configuration system:
+1. Uses a relative `/api` path in the Angular application
+2. Configures Nginx to proxy requests from `/api/*` to your backend
+3. Automatically handles URL formatting to avoid common issues
 
-2. API requests are proxied through Nginx to avoid CORS issues, using the format:
-   - Frontend makes requests to `/api/*`
-   - Nginx proxies these to `${API_URL}/api/*`
+### Validation on Startup
+
+The container includes a startup script that:
+1. Validates the API_URL format
+2. Adds trailing slashes if needed
+3. Removes redundant `/api` paths if accidentally included
+4. Outputs the final URL configuration to the logs for verification
 
 ### Testing Your Configuration
 
@@ -43,10 +50,10 @@ After deployment, you can verify the configuration is working by:
 
 If API requests are failing:
 
-1. Check that the API_URL environment variable is set correctly in Railway
-2. Verify that your backend service is running
-3. Check that your backend service's CORS settings allow requests from your frontend URL
-4. Inspect the network requests in your browser's developer tools to see exact request URLs and error messages
+1. Check container logs to see the actual API_URL being used
+2. Verify that your backend service is running and accessible
+3. Ensure your backend service's CORS settings allow requests from your frontend URL
+4. Check that the URL format is correct (protocol, hostname, port if needed)
 
 ### Local Development
 

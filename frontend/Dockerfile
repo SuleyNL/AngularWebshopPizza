@@ -13,8 +13,8 @@ RUN npm ci
 # Copy project files
 COPY . .
 
-# Build the Angular app
-RUN npm run build
+# Build the Angular app with production settings
+RUN npm run build -- --configuration production
 
 
 ### STAGE 2: Serve with Nginx ###
@@ -29,7 +29,11 @@ COPY --from=build /app/dist/pizza-webshop-frontend /usr/share/nginx/html
 # Copy nginx configuration template
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# Environment variable for API URL
+# Copy the startup script
+COPY start-nginx.sh /start-nginx.sh
+RUN chmod +x /start-nginx.sh
+
+# Environment variable for API URL (default for local testing)
 ENV API_URL=http://localhost:8080
 
 # Install gettext for envsubst
@@ -38,5 +42,5 @@ RUN apk add --no-cache gettext
 # Expose port 80 (HTTP)
 EXPOSE 80
 
-# Start NGINX with environment variable substitution
-CMD ["/bin/sh", "-c", "envsubst '$$API_URL' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && sed -i \"s|/api|${API_URL}/api|g\" /usr/share/nginx/html/main*.js && nginx -g 'daemon off;'"]
+# Start NGINX using the startup script
+CMD ["/start-nginx.sh"]

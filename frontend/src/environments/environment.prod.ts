@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '' // Empty base URL for proxying through nginx
+  apiUrl: '/api' // API URL relative to the current host - will be handled by nginx
 }; 
