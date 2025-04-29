@@ -47,6 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   fetchPizzaMenu(): void {
+    console.log(`Fetching pizza menu from ${environment.apiUrl}/api/products`);
     this.http.get<Product[]>(`${environment.apiUrl}/api/products`)
       .subscribe({
         next: (products) => {
