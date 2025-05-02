@@ -1,0 +1,123 @@
+# General
+.DS_Store
+*.log
+*.swp
+*.bak
+*.tmp
+*.idea
+*.iml
+*.vscode
+*.env
+*.cache
+*.classpath
+*.project
+*.settings/
+*.factorypath
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp*
+.angular/
+.serverless/
+
+# Java/Maven
+target/
+**/target/
+**/mvnw
+**/mvnw.cmd
+**/.mvn/wrapper/maven-wrapper.jar
+**/dependency-reduced-pom.xml
+**/pom.xml.versionsBackup
+**/release.properties
+
+# Angular
+dist/
+**/dist/
+node_modules/
+**/node_modules/
+.tmp/
+.ngcc/
+**/.angular/cache
+**/aot/
+**/www/
+stats.json
+/coverage
+**/coverage
+*.js.map
+*.css.map
+*.metadata.json
+*.ngsummary.json
+*.ngfactory.ts
+*.d.ts
+*.spec.ts
+
+# Build files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE specific
+.idea/
+*.ipr
+*.iws
+*.iml
+*.class
+*.project
+*.settings/
+*.springBeans
+bin/
+**/bin/
+out/
+**/out/
+*.launch
+
+# System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Testing
+junitreports/
+TEST*.xml
+**/test-output/
+**/test-results/
+**/surefire-reports/
+**/failsafe-reports/
+**/reports/
+
+# Logs
+logs/
+**/logs/
+*.log
+**/*.log
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Package Files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
