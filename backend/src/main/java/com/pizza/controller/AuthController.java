@@ -8,6 +8,10 @@ import com.pizza.model.User;
 import com.pizza.repository.UserRepository;
 import com.pizza.security.JwtUtil;
 import com.pizza.security.UserDetailsServiceImpl;
+
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -89,22 +95,76 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login");
         }
     }
-
+    
     @GetMapping("/test-auth")
     public ResponseEntity<String> testAuth() {
+        final String testUsername = "admin";
+        LOGGER.info("Starting authentication test for user: {}", testUsername);
+        
         try {
+            LOGGER.debug("Attempting to authenticate user: {}", testUsername);
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken("admin", "admin123")
+                    new UsernamePasswordAuthenticationToken(testUsername, "admin123")
             );
-            // Log or use the authentication details
-            LOGGER.info("Authenticated as: {}, Authorities: {}", 
-                authentication.getName(), 
-                authentication.getAuthorities());
-            return ResponseEntity.ok("Authentication successful for: " + authentication.getName());
+
+            // Detailed authentication logging
+            LOGGER.info("Authentication successful for user: {}", testUsername);
+            LOGGER.debug("Authentication details - " +
+                        "Authenticated: {}, " +
+                        "Principal: {}, " +
+                        "Authorities: {}, " +
+                        "Credentials: [PROTECTED], " +
+                        "Details: {}",
+                    authentication.isAuthenticated(),
+                    authentication.getPrincipal(),
+                    authentication.getAuthorities(),
+                    authentication.getDetails());
+
+            // Build comprehensive response
+            String responseMessage = String.format(
+                    "Authentication successful for user: %s%n" +
+                    "Authenticated: %b%n" +
+                    "Authorities: %s",
+                    authentication.getName(),
+                    authentication.isAuthenticated(),
+                    authentication.getAuthorities());
+
+            return ResponseEntity.ok(responseMessage);
+        } catch (BadCredentialsException e) {
+            LOGGER.warn("Authentication failed - bad credentials for user: {}", testUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication failed: Invalid credentials");
+        } catch (DisabledException e) {
+            LOGGER.warn("Authentication failed - account disabled for user: {}", testUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication failed: Account disabled");
+        } catch (LockedException e) {
+            LOGGER.warn("Authentication failed - account locked for user: {}", testUsername);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication failed: Account locked");
         } catch (Exception e) {
-            LOGGER.error("Test auth error: {}", e.getMessage(), e);
+            LOGGER.error("Authentication test failed for user: {}. Error: {} - Stack trace: {}", 
+                    testUsername, 
+                    e.getMessage(), 
+                    Arrays.toString(e.getStackTrace()));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Auth error: " + e.getMessage());
+                    .body(String.format("Authentication test failed: %s%n%s", 
+                        e.getMessage(), 
+                        Arrays.toString(e.getStackTrace())));
+        }
+    }
+
+    @GetMapping("/test-db")
+    public ResponseEntity<String> testDb() {
+        try {
+            long userCount = userRepository.count();
+            Optional<User> anyUser = userRepository.findAll().stream().findFirst();
+            return ResponseEntity.ok("DB connection ok. User count: " + userCount + 
+                ", Sample user: " + (anyUser.isPresent() ? anyUser.get().getUsername() : "none"));
+        } catch (Exception e) {
+            LOGGER.error("DB test error: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("DB error: " + e.getMessage());
         }
     }
 
