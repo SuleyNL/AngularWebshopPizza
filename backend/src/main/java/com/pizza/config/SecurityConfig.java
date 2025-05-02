@@ -52,7 +52,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         
             // Admin-only endpoints
             .requestMatchers("/api/users/**", "/api/admin/**").hasAuthority("ADMIN")
-        
+            
             // Authenticated-only endpoints
             .requestMatchers("/api/orders/**").authenticated()
         

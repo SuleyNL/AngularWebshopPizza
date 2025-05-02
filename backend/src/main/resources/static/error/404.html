@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - Pizza Deliziosa API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <style>
+        :root {
+            --pizza-red: #ff5722;
+            --pizza-yellow: #ffc107;
+            --pizza-brown: #795548;
+            --pizza-light: #f5f5f5;
+            --pizza-dark: #333333;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--pizza-light);
+            color: var(--pizza-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .error-container {
+            max-width: 600px;
+            width: 90%;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .status-code {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 80px;
+            font-weight: bold;
+            color: rgba(255, 87, 34, 0.1);
+            line-height: 1;
+            font-family: 'Playfair Display', serif;
+            z-index: -1;
+        }
+
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            background-color: var(--pizza-red);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .error-icon::before {
+            content: "?";
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--pizza-red);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--pizza-brown);
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+
+        .api-info {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .api-info p {
+            margin: 0.5rem 0;
+        }
+        
+        .api-endpoints {
+            text-align: left;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .api-endpoints h3 {
+            margin-top: 0;
+            color: var(--pizza-brown);
+            font-size: 1rem;
+        }
+        
+        .api-endpoints ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .api-endpoints li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+        }
+        
+        .api-endpoints li:last-child {
+            border-bottom: none;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .primary-button {
+            background-color: var(--pizza-red);
+            color: white;
+            border: none;
+        }
+
+        .primary-button:hover {
+            background-color: #e64a19;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .secondary-button {
+            background-color: white;
+            color: var(--pizza-red);
+            border: 1px solid var(--pizza-red);
+        }
+
+        .secondary-button:hover {
+            background-color: #fff8e1;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Pizza animation in background */
+        .pizza-animation {
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 200px;
+            height: 200px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .pizza-slice {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 200px solid var(--pizza-yellow);
+            transform-origin: center bottom;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 576px) {
+            .error-container {
+                padding: 1.5rem;
+            }
+            
+            .status-code {
+                font-size: 60px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="status-code">404</div>
+        <div class="error-icon"></div>
+        <h1>Resource Not Found</h1>
+        <div class="subtitle">The requested API endpoint does not exist</div>
+        <p>The API resource you're looking for might have been removed, renamed, or is temporarily unavailable.</p>
+        
+        <div class="api-info">
+            <p><strong>Request Path:</strong> ${path}</p>
+            <p><strong>Timestamp:</strong> ${timestamp}</p>
+            <p><strong>Status:</strong> 404 Not Found</p>
+        </div>
+        
+        <div class="api-endpoints">
+            <h3>Available API Endpoints:</h3>
+            <ul>
+                <li>/api/products - Browse products</li>
+                <li>/api/auth/login - Authentication</li>
+                <li>/api/orders - Order management</li>
+                <li>/api/status - API status</li>
+                <li>/api/health - Health check</li>
+            </ul>
+        </div>
+        
+        <div class="button-container">
+            <a href="/api/status" class="button primary-button">API Status</a>
+            <a href="/" class="button secondary-button">Return to Homepage</a>
+        </div>
+        
+        <div class="pizza-animation">
+            <div class="pizza-slice"></div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -27,7 +27,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/status",
-            "/api/products/**"
+            "/api/products/**",
+            "/api/health",
+            "/api/status",
+            "/error/**"
     );
     
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
