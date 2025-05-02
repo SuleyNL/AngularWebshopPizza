@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret:pizza_deliziosa_secret_key}")
+    @Value("${jwt.secret:your-very-long-secret-string-at-least-32-characters-long}")
     private String secretString;
     
     @Value("${jwt.expiration:86400000}") // 1 day in milliseconds
