@@ -1,0 +1,129 @@
+$primary-color: #ff5722; // Pizza sauce color
+$secondary-color: #ffc107; // Pizza cheese color
+$background-color: #f5f5f5;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px);
+  background-color: $background-color;
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.error-card {
+  max-width: 600px;
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px $shadow-color;
+  text-align: center;
+  padding: 40px 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  
+  .icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+    color: $primary-color;
+  }
+}
+
+.error-status {
+  font-size: 120px;
+  font-weight: 700;
+  color: rgba($primary-color, 0.1);
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  line-height: 1;
+}
+
+.error-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  position: relative;
+  color: #333;
+}
+
+.error-message {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+  position: relative;
+  
+  button {
+    transition: transform 0.2s ease-in-out;
+    
+    &:hover {
+      transform: translateY(-3px);
+    }
+  }
+}
+
+// Pizza animation styles
+.pizza-animation {
+  position: absolute;
+  bottom: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  opacity: 0.1;
+  
+  .pizza-slice {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 75px solid transparent;
+    border-right: 75px solid transparent;
+    border-bottom: 150px solid $secondary-color;
+    transform-origin: center bottom;
+    animation: rotate 15s linear infinite;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .error-status {
+    font-size: 80px;
+  }
+  
+  .error-title {
+    font-size: 24px;
+  }
+  
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+} 

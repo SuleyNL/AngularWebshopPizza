@@ -32,7 +32,15 @@ const routes: Routes = [
   { path: 'admin/users/edit/:id', component: EditUserComponent },
   { path: 'admin/messages', component: MessageManagementComponent },
   { path: 'admin/messages/edit/:id', component: EditMessageComponent },
-  { path: '**', redirectTo: '' }
+  
+  // Error pages
+  { path: 'error/:status', loadComponent: () => import('./shared/components/error-page/error-page.component').then(m => m.ErrorPageComponent) },
+  { path: 'unauthorized', redirectTo: 'error/401', pathMatch: 'full' },
+  { path: 'forbidden', redirectTo: 'error/403', pathMatch: 'full' },
+  { path: 'server-error', redirectTo: 'error/500', pathMatch: 'full' },
+  
+  // 404 - Catch all route
+  { path: '**', redirectTo: 'error/404', pathMatch: 'full' }
 ];
 
 @NgModule({

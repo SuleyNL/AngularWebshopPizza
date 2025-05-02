@@ -1,0 +1,23 @@
+<div class="error-container">
+  <div class="error-card">
+    <div class="error-icon">
+      <mat-icon class="icon">{{ errorType.icon }}</mat-icon>
+    </div>
+    <div class="error-status">{{ errorType.status }}</div>
+    <h1 class="error-title">{{ errorType.title }}</h1>
+    <p class="error-message">{{ errorType.message }}</p>
+    
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="goHome()">
+        <mat-icon>home</mat-icon> Go to Home
+      </button>
+      <button mat-stroked-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Go Back
+      </button>
+    </div>
+    
+    <div class="pizza-animation">
+      <div class="pizza-slice"></div>
+    </div>
+  </div>
+</div> 

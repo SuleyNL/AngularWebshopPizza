@@ -6,6 +6,7 @@ import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
 import { OrderService } from './services/order.service';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
 
 @NgModule({
   declarations: [],
@@ -20,6 +21,11 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true
     }
   ]

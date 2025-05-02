@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unauthorized - Pizza Deliziosa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 600px;
+      background-color: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #ff5722;
+    }
+    
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: #ff5722;
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+      background-color: #e64a19;
+    }
+    
+    .status-code {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 80px;
+      font-weight: bold;
+      color: rgba(255, 87, 34, 0.1);
+      line-height: 1;
+    }
+    
+    .pizza-animation {
+      position: absolute;
+      bottom: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      opacity: 0.1;
+    }
+    
+    .pizza-slice {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 75px solid transparent;
+      border-right: 75px solid transparent;
+      border-bottom: 150px solid #ffc107;
+      transform-origin: center bottom;
+      animation: rotate 15s linear infinite;
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="status-code">401</div>
+    <h1>Unauthorized</h1>
+    <p>You need to be logged in to access this resource. Please log in and try again.</p>
+    <a href="/login" class="btn">Go to Login</a>
+    <div class="pizza-animation">
+      <div class="pizza-slice"></div>
+    </div>
+  </div>
+</body>
+</html> 
