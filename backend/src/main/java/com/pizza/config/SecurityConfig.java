@@ -40,20 +40,22 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.GET, "/", "/error").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/api/status", "/api/health").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow pre-flight requests
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/api/status", "/api/health").permitAll() // Status endpoints are publicly accessible
-                .requestMatchers("/api/users/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/orders/**").authenticated()
-
-                .anyRequest().authenticated()
+            // Public endpoints
+            .requestMatchers(HttpMethod.GET, "/", "/error").permitAll()
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll() // API docs
+            .requestMatchers("/api/auth/**", "/api/products/**").permitAll() // Auth & products
+            .requestMatchers("/api/status", "/api/health").permitAll() // Health checks
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS pre-flight
+        
+            // Admin-only endpoints
+            .requestMatchers("/api/users/**", "/api/admin/**").hasAuthority("ADMIN")
+        
+            // Authenticated-only endpoints
+            .requestMatchers("/api/orders/**").authenticated()
+        
+            // All other requests require authentication
+            .anyRequest().authenticated()
+        )
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

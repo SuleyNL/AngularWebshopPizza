@@ -82,10 +82,58 @@ public class AuthController {
             LOGGER.warn("Bad credentials for user: {}", authRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         } catch (Exception e) {
-            LOGGER.error("Login error for user: {}", authRequest.getUsername(), e);
+            LOGGER.error("Login error for user: {}, Exception: {}, Stack trace: {}", 
+                         authRequest.getUsername(), 
+                         e.getMessage(),
+                         e.getStackTrace());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login");
         }
     }
+
+    @GetMapping("/test-auth")
+    public ResponseEntity<String> testAuth() {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken("admin", "admin123")
+            );
+            // Log or use the authentication details
+            LOGGER.info("Authenticated as: {}, Authorities: {}", 
+                authentication.getName(), 
+                authentication.getAuthorities());
+            return ResponseEntity.ok("Authentication successful for: " + authentication.getName());
+        } catch (Exception e) {
+            LOGGER.error("Test auth error: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Auth error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/test-auth-deep")
+    public ResponseEntity<?> testAuthDeep() {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken("admin", "admin123")
+            );
+            
+            final UserDetails userDetails = userDetailsService.loadUserByUsername("admin");
+            final String jwt = jwtUtil.generateToken(userDetails);
+            
+            User user = userRepository.findByUsername("admin")
+                    .orElseThrow(() -> new IllegalStateException("User not found after authentication"));
+            
+            return ResponseEntity.ok(AuthResponseDto.builder()
+                    .token(jwt)
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .role(user.getRole().name())
+                    .build());
+        } catch (Exception e) {
+            LOGGER.error("Test auth error: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Auth error: " + e.getMessage());
+        }
+    }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto registerRequest) {
