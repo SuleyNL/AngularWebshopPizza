@@ -6,14 +6,14 @@ WORKDIR /app
 # Copy the pom.xml file first to leverage Docker cache
 COPY pom.xml .
 
-# Download all dependencies (will be cached if pom.xml doesn't change)
-RUN mvn dependency:go-offline -B
+# Download all dependencies with better error handling
+RUN mvn dependency:resolve -B -q
 
 # Copy source code
 COPY src ./src
 
 # Package the application
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests -B -e -X
 
 # Use a smaller JRE image for the runtime
 FROM eclipse-temurin:17-jre-alpine
